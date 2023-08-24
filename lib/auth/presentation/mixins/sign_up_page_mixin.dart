@@ -1,6 +1,6 @@
-part of 'package:ulesson_auth_firebase/auth/presentation/sign_in_page.dart';
+part of 'package:ulesson_auth_firebase/auth/presentation/sign_up_page.dart';
 
-mixin LoginPageMixin on State<LoginPage> {
+mixin SignUpPageMixin on State<SignUpPage> {
   late AuthBloc _authBloc;
   late TextEditingController _emailController;
   late TextEditingController _passwordController;

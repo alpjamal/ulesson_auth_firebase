@@ -12,6 +12,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc() : super(const AuthState()) {
     on<SignInEvent>(_signIn);
     on<SignUpEvent>(_signUp);
+    on<SignOutEvent>(_signOut);
   }
 
   _signIn(SignInEvent event, emit) async {
@@ -41,7 +42,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         ),
       );
     }
-    emit(state.copyWith(authStatus: Status.initial));
+    if (state.authStatus.isError) {
+      emit(state.copyWith(authStatus: Status.initial));
+    }
   }
 
   _signUp(SignUpEvent event, emit) async {
@@ -71,6 +74,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         ),
       );
     }
-    emit(state.copyWith(authStatus: Status.initial));
+    if (state.authStatus.isError) {
+      emit(state.copyWith(authStatus: Status.initial));
+    }
+  }
+
+  _signOut(SignOutEvent event, emit) async {
+    emit(state.copyWith(authStatus: Status.loading));
+    await Future.delayed(const Duration(milliseconds: 500));
+    try {
+      await Auth().signOut();
+      emit(state.copyWith(authStatus: Status.initial));
+    } on FirebaseException catch (e) {
+      emit(state.copyWith(errorMessage: e.message));
+    } catch (e) {
+      emit(state.copyWith(errorMessage: e.toString()));
+    }
   }
 }

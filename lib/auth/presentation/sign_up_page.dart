@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ulesson_auth_firebase/auth/bloc/auth_bloc.dart';
 import 'package:ulesson_auth_firebase/auth/models/auth_params.dart';
-import 'package:ulesson_auth_firebase/auth/presentation/sign_up_page.dart';
+import 'package:ulesson_auth_firebase/auth/presentation/sign_in_page.dart';
 import 'package:ulesson_auth_firebase/home/home_page.dart';
 
-part 'package:ulesson_auth_firebase/auth/presentation/mixins/sign_in_page_mixin.dart';
+part 'package:ulesson_auth_firebase/auth/presentation/mixins/sign_up_page_mixin.dart';
 
-class SignInPage extends StatefulWidget {
-  const SignInPage({super.key});
+class SignUpPage extends StatefulWidget {
+  const SignUpPage({super.key});
 
   @override
-  State<SignInPage> createState() => _LoginPageState();
+  State<SignUpPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<SignInPage> with SignInPageMixin {
+class _LoginPageState extends State<SignUpPage> with SignUpPageMixin {
   @override
   void initState() {
     super.initState();
@@ -44,6 +44,7 @@ class _LoginPageState extends State<SignInPage> with SignInPageMixin {
         return Scaffold(
           backgroundColor: Colors.white,
           appBar: AppBar(
+            automaticallyImplyLeading: false,
             title: const Text(
               "Auth",
               style: TextStyle(
@@ -89,10 +90,10 @@ class _LoginPageState extends State<SignInPage> with SignInPageMixin {
                   child: ElevatedButton(
                     onPressed: () {
                       _authBloc.add(
-                        SignInEvent(
-                          signInParams: AuthParams(
-                            email: 'jamal@mail.ru' ?? _emailController.text,
-                            password: 'asdfasdf' ?? _passwordController.text,
+                        SignUpEvent(
+                          signUpParams: AuthParams(
+                            email: _emailController.text,
+                            password: _passwordController.text,
                           ),
                         ),
                       );
@@ -103,14 +104,14 @@ class _LoginPageState extends State<SignInPage> with SignInPageMixin {
                     child: state.authStatus.isLoading
                         ? const CircularProgressIndicator.adaptive()
                         : const Text(
-                            'Sign in',
+                            'Sign up',
                             style: TextStyle(fontSize: 20),
                           ),
                   ),
                 ),
                 const SizedBox(height: 50),
                 const Text(
-                  'New User?',
+                  'Already have an account?',
                   style: TextStyle(
                     fontSize: 18,
                   ),
@@ -118,13 +119,10 @@ class _LoginPageState extends State<SignInPage> with SignInPageMixin {
                 TextButton(
                   style: TextButton.styleFrom(padding: EdgeInsets.zero),
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const SignUpPage()),
-                    );
+                    Navigator.pop(context);
                   },
                   child: Text(
-                    'Create An Account!',
+                    'Sign in',
                     style: TextStyle(color: Theme.of(context).colorScheme.primary),
                   ),
                 ),
