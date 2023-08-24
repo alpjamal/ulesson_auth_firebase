@@ -91,8 +91,8 @@ class _LoginPageState extends State<SignInPage> with SignInPageMixin {
                       _authBloc.add(
                         SignInEvent(
                           signInParams: AuthParams(
-                            email: 'jamal@mail.ru' ?? _emailController.text,
-                            password: 'asdfasdf' ?? _passwordController.text,
+                            email: _emailController.text,
+                            password: _passwordController.text,
                           ),
                         ),
                       );
