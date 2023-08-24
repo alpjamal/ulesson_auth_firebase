@@ -26,11 +26,11 @@ class _LoginPageState extends State<SignInPage> with SignInPageMixin {
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state.authStatus == Status.success) {
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => const HomePage()),
-            (route) => false,
-          );
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => const HomePage()),
+              (route) => false,
+            );
         }
         if (state.authStatus == Status.error) {
           ScaffoldMessenger.of(context).showSnackBar(

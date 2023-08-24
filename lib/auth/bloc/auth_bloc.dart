@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ulesson_auth_firebase/auth/models/auth_params.dart';
 import 'package:ulesson_auth_firebase/auth/repository/auth.dart';
 
@@ -27,6 +28,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           authStatus: Status.success,
         ),
       );
+      _saveOrDeleteData(email: event.signInParams.email);
     } on FirebaseException catch (e) {
       emit(
         state.copyWith(
@@ -59,6 +61,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           authStatus: Status.success,
         ),
       );
+      _saveOrDeleteData(email: event.signUpParams.email);
     } on FirebaseException catch (e) {
       emit(
         state.copyWith(
@@ -85,10 +88,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       await Auth().signOut();
       emit(state.copyWith(authStatus: Status.initial));
+      _saveOrDeleteData();
     } on FirebaseException catch (e) {
       emit(state.copyWith(errorMessage: e.message));
     } catch (e) {
       emit(state.copyWith(errorMessage: e.toString()));
+    }
+  }
+
+  _saveOrDeleteData({String? email}) async {
+    var prefs = await SharedPreferences.getInstance();
+    if (email != null) {
+      prefs.setString('email', email);
+    } else {
+      prefs.remove('email');
     }
   }
 }

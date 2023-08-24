@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ulesson_auth_firebase/auth/bloc/auth_bloc.dart';
 import 'package:ulesson_auth_firebase/auth/presentation/sign_in_page.dart';
+import 'package:ulesson_auth_firebase/auth/presentation/splash_page.dart';
 import 'package:ulesson_auth_firebase/home/home_page.dart';
 
 void main() async {
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: const SignInPage(),
+        home: const SplashPage(),
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Auth {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -29,5 +30,19 @@ class Auth {
 
   Future<void> signOut() async {
     await _firebaseAuth.signOut();
+  }
+
+  Future<bool> isUserSignedIn() async {
+    await Future.delayed(const Duration(seconds: 1));
+
+    var prefs = await SharedPreferences.getInstance();
+
+    String? email = prefs.getString('email');
+
+    bool isSignedIn = false;
+    if (email == (currentUser?.email ?? '')) {
+      isSignedIn = true;
+    }
+    return isSignedIn;
   }
 }
