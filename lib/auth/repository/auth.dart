@@ -36,13 +36,8 @@ class Auth {
     await Future.delayed(const Duration(seconds: 1));
 
     var prefs = await SharedPreferences.getInstance();
+    bool? isSignedIn = prefs.getBool('isSignedIn');
 
-    String? email = prefs.getString('email');
-
-    bool isSignedIn = false;
-    if (email == (currentUser?.email ?? '')) {
-      isSignedIn = true;
-    }
-    return isSignedIn;
+    return isSignedIn ?? false;
   }
 }

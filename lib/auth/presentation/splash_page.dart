@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:ulesson_auth_firebase/auth/presentation/sign_in_page.dart';
 import 'package:ulesson_auth_firebase/auth/repository/auth.dart';

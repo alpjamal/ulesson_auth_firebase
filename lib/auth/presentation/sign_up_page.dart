@@ -109,7 +109,25 @@ class _LoginPageState extends State<SignUpPage> with SignUpPageMixin {
                           ),
                   ),
                 ),
-                const SizedBox(height: 50),
+                // const SizedBox(height: 20),
+                // Padding(
+                //   padding: const EdgeInsets.symmetric(horizontal: 30),
+                //   child: ElevatedButton(
+                //     onPressed: () {
+                //       _authBloc.add(GoogleSignInEvent());
+                //     },
+                //     style: ElevatedButton.styleFrom(
+                //       minimumSize: const Size.fromHeight(50),
+                //     ),
+                //     child: state.authStatus.isLoading
+                //         ? const CircularProgressIndicator.adaptive()
+                //         : const Text(
+                //             'Sign up with Google',
+                //             style: TextStyle(fontSize: 20),
+                //           ),
+                //   ),
+                // ),
+                const SizedBox(height: 20),
                 const Text(
                   'Already have an account?',
                   style: TextStyle(
