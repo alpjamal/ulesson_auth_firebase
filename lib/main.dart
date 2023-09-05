@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ulesson_auth_firebase/auth/bloc/auth_bloc.dart';
 import 'package:ulesson_auth_firebase/auth/presentation/sign_in_page.dart';
 import 'package:ulesson_auth_firebase/auth/presentation/splash_page.dart';
+import 'package:ulesson_auth_firebase/home/bloc/home_bloc.dart';
 import 'package:ulesson_auth_firebase/home/home_page.dart';
 
 void main() async {
@@ -21,6 +22,9 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider<AuthBloc>(
           create: (_) => AuthBloc(),
+        ),
+        BlocProvider<HomeBloc>(
+          create: (_) => HomeBloc()..add(LoadEvent()),
         ),
       ],
       child: MaterialApp(

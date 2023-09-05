@@ -3,16 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ulesson_auth_firebase/auth/bloc/auth_bloc.dart';
 import 'package:ulesson_auth_firebase/auth/presentation/sign_in_page.dart';
-import 'package:ulesson_auth_firebase/auth/repository/auth.dart';
+import 'package:ulesson_auth_firebase/home/bloc/home_bloc.dart';
+import 'package:ulesson_auth_firebase/home/models/contact.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    Auth auth = Auth();
-    User user = auth.currentUser!;
-    return BlocConsumer<AuthBloc, AuthState>(
+    return BlocConsumer<HomeBloc, HomeState>(
       listener: (context, state) {
         if (state.authStatus.isInitial) {
           Navigator.pushAndRemoveUntil(
@@ -26,32 +25,42 @@ class HomePage extends StatelessWidget {
         return Scaffold(
           appBar: AppBar(
             title: const Text(
-              'Home Page',
+              'Users',
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 30,
+                fontSize: 25,
                 fontWeight: FontWeight.bold,
               ),
             ),
             backgroundColor: Colors.deepPurple.shade300,
           ),
-          body: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(30),
-                child: Text(
-                  'Hello ${user.email}, you are logged in!',
-                  style: const TextStyle(fontSize: 22),
-                  textAlign: TextAlign.center,
+          body: state.status.isLoading
+              ? const Center(
+                  child: CircularProgressIndicator.adaptive(
+                  backgroundColor: Colors.green,
+                ))
+              : SingleChildScrollView(
+                  child: Column(
+                    children: List.generate(
+                      state.contacts.length,
+                      (index) {
+                        Contact contact = state.contacts[index];
+                        return Padding(
+                          padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                          child: ListTile(
+                            leading: const CircleAvatar(backgroundColor: Colors.grey),
+                            title: Text(contact.email),
+                            tileColor: Colors.green.shade200,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
                 ),
-              ),
-            ],
-          ),
           floatingActionButton: FloatingActionButton(
             onPressed: () {
-              context.read<AuthBloc>().add(SignOutEvent());
+              context.read<HomeBloc>().add(SignOutEvent());
             },
             child: state.authStatus.isLoading ? const CircularProgressIndicator.adaptive() : const Icon(Icons.logout),
           ),

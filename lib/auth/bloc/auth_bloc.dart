@@ -1,5 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ulesson_auth_firebase/auth/models/auth_params.dart';
@@ -14,7 +14,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc() : super(const AuthState()) {
     on<SignInEvent>(_signIn);
     on<SignUpEvent>(_signUp);
-    on<SignOutEvent>(_signOut);
     on<GoogleSignInEvent>(_googleSignIn);
   }
 
@@ -30,7 +29,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           authStatus: Status.success,
         ),
       );
-      _setSignInState(true);
+      _setSignInState();
     } on FirebaseException catch (e) {
       emit(
         state.copyWith(
@@ -54,7 +53,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   _signUp(SignUpEvent event, emit) async {
     emit(state.copyWith(authStatus: Status.loading));
     try {
-      await Auth().createUserWithEmailAndPassword(
+      final userCredential = await Auth().createUserWithEmailAndPassword(
         password: event.signUpParams.password,
         email: event.signUpParams.email,
       );
@@ -63,7 +62,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           authStatus: Status.success,
         ),
       );
-      _setSignInState(true);
+      _setSignInState();
+
+      await FirebaseFirestore.instance.collection('users').doc(userCredential!.user!.uid).set(
+        {
+          'name': userCredential.user!.displayName,
+          'uid': userCredential.user!.uid,
+          'email': userCredential.user!.email,
+        },
+      );
     } on FirebaseException catch (e) {
       emit(
         state.copyWith(
@@ -84,23 +91,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
-  _signOut(SignOutEvent event, emit) async {
-    emit(state.copyWith(authStatus: Status.loading));
-    await Future.delayed(const Duration(milliseconds: 500));
-    try {
-      await Auth().signOut();
-      emit(state.copyWith(authStatus: Status.initial));
-      _setSignInState(false);
-    } on FirebaseException catch (e) {
-      emit(state.copyWith(errorMessage: e.message));
-    } catch (e) {
-      emit(state.copyWith(errorMessage: e.toString()));
-    }
-  }
-
-  _setSignInState(bool signIn) async {
+  _setSignInState() async {
     var prefs = await SharedPreferences.getInstance();
-    prefs.setBool('isSignedIn', signIn);
+    prefs.setBool('isSignedIn', true);
   }
 
   _googleSignIn(
@@ -114,7 +107,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           authStatus: Status.success,
         ),
       );
-      _setSignInState(true);
+      _setSignInState();
     } on FirebaseException catch (e) {
       emit(
         state.copyWith(
